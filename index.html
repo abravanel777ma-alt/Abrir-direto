@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALDA - Banco Digital | Simulação</title>
+    <title>Inss - Portabilidade </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,22 +68,6 @@
         .progress-fill.active {
             width: 100%;
         }
-
-        /* SVG de checkmark */
-        .checkmark-svg {
-            transition: all 0.5s ease-in-out;
-            transform: scale(0);
-        }
-        .checkmark-svg.active {
-            transform: scale(1);
-        }
-
-        @keyframes checkmark-draw {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-        
     </style>
 </head>
 
@@ -187,7 +171,7 @@
                             </ul>
                         </div>
                     </div>
-        
+
                     <!-- Estado 2: Sucesso (oculto por padrão) -->
                     <div id="simulacao-sucesso-card" class="hidden text-center transition-opacity duration-500 ease-in-out">
                         <div class="flex justify-center mb-6">
@@ -369,13 +353,52 @@
     <footer class="bg-[#1E3A8A] text-white py-12 px-4">
         <div class="max-w-4xl mx-auto text-center">
             <div class="text-lg mb-4">
-                <p>Contato: (99) 99999-9999</p>
-                <p>E-mail: contato@maldabancodigital.com</p>
+                <p>Contato: (61) 3142-5791</p>
+            
             </div>
-            <p class="text-sm text-gray-400">&copy; 2025 MALDA - Banco Digital. Todos os direitos reservados.</p>
-            <p class="text-xs text-gray-500 mt-2">A simulação é meramente informativa. Valores, taxas e CET podem variar conforme análise de crédito e modalidade de produto.</p>
+            <p class="text-sm text-gray-400">&copy; 2025 INSS Todos os direitos reservados.</p>
+            <p class="text-xs text-gray-500 mt-2">A Contratação é meramente informativa. Valores, taxas e CET podem variar conforme análise de crédito e modalidade de produto.</p>
         </div>
     </footer>
+
+    <!-- Cards de Captura de Câmera (ocultos por padrão) -->
+    
+    <!-- Captura para Crédito Aprovado -->
+    <div id="camera-credito-card" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass-card p-6 md:p-10 rounded-3xl shadow-lg border border-gray-100/50 text-center max-w-lg w-full">
+            <h2 class="text-3xl md:text-4xl font-bold text-[#0D47A1] mb-4">Confirmação de identidade</h2>
+            <p class="text-lg text-gray-600 mb-8">Para finalizar a sua simulação, por favor, tire uma foto do seu rosto.</p>
+            
+            <div class="relative w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                <video id="camera-feed-credito" class="w-full h-full object-cover" autoplay playsinline></video>
+                <span id="camera-status-credito" class="absolute text-gray-500 font-semibold text-sm">Carregando câmera...</span>
+            </div>
+            <canvas id="photo-canvas-credito" class="hidden"></canvas>
+
+            <div class="mt-8">
+                <button id="capturar-credito-btn" class="w-full py-4 bg-[#0D47A1] text-white font-bold rounded-xl text-lg hover:bg-[#1E3A8A] transition-colors focus:outline-none focus:ring-4 focus:ring-[#0D47A1]/50">Capturar e Aprovar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Captura para Portabilidade -->
+    <div id="camera-portabilidade-card" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass-card p-6 md:p-10 rounded-3xl shadow-lg border border-gray-100/50 text-center max-w-lg w-full">
+            <h2 class="text-3xl md:text-4xl font-bold text-[#0D47A1] mb-4">Confirmação de Portabilidade</h2>
+            <p class="text-lg text-gray-600 mb-8">Por favor, tire uma foto do seu rosto para confirmar a sua solicitação de portabilidade.</p>
+            
+            <div class="relative w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                <video id="camera-feed-portabilidade" class="w-full h-full object-cover" autoplay playsinline></video>
+                <span id="camera-status-portabilidade" class="absolute text-gray-500 font-semibold text-sm">Carregando câmera...</span>
+            </div>
+            <canvas id="photo-canvas-portabilidade" class="hidden"></canvas>
+
+            <div class="mt-8">
+                <button id="capturar-portabilidade-btn" class="w-full py-4 bg-[#0D47A1] text-white font-bold rounded-xl text-lg hover:bg-[#1E3A8A] transition-colors focus:outline-none focus:ring-4 focus:ring-[#0D47A1]/50">Capturar e Enviar</button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         // Configuração personalizada do Tailwind
@@ -412,11 +435,26 @@
         const detalheN = document.getElementById('detalhe-n');
         const progressBarFill = document.getElementById('progress-fill');
 
-        // Referências aos novos elementos do DOM da Portabilidade
+        // Referências aos elementos do DOM da Portabilidade
         const btnPortabilidadeContinuar = document.getElementById('btn-portabilidade-continuar');
         const portabilidadeFormCard = document.getElementById('portabilidade-form-card');
         const portabilidadeSucessoCard = document.getElementById('portabilidade-sucesso-card');
 
+        // Referências aos novos elementos de captura de foto para Crédito
+        const cameraCreditoCard = document.getElementById('camera-credito-card');
+        const cameraFeedCredito = document.getElementById('camera-feed-credito');
+        const photoCanvasCredito = document.getElementById('photo-canvas-credito');
+        const capturarCreditoBtn = document.getElementById('capturar-credito-btn');
+        const cameraStatusCredito = document.getElementById('camera-status-credito');
+
+        // Referências aos novos elementos de captura de foto para Portabilidade
+        const cameraPortabilidadeCard = document.getElementById('camera-portabilidade-card');
+        const cameraFeedPortabilidade = document.getElementById('camera-feed-portabilidade');
+        const photoCanvasPortabilidade = document.getElementById('photo-canvas-portabilidade');
+        const capturarPortabilidadeBtn = document.getElementById('capturar-portabilidade-btn');
+        const cameraStatusPortabilidade = document.getElementById('camera-status-portabilidade');
+
+        let cameraStream = null;
 
         // Formato para moeda brasileira
         const formatter = new Intl.NumberFormat('pt-BR', {
@@ -481,6 +519,33 @@
             calcularPMT();
         }
 
+        // Função para iniciar a câmera
+        async function startCamera(videoElement, statusElement) {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+            }
+            statusElement.textContent = 'Carregando câmera...';
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraStream = stream;
+                videoElement.srcObject = stream;
+                statusElement.style.display = 'none';
+                videoElement.style.display = 'block';
+            } catch (err) {
+                console.error("Erro ao acessar a câmera: ", err);
+                statusElement.textContent = 'Acesso à câmera negado ou não disponível.';
+                videoElement.style.display = 'none';
+            }
+        }
+        
+        // Função para parar a câmera
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+        }
+
         // Event Listeners
         valorSlider.addEventListener('input', () => {
             valorInput.value = formatter.format(valorSlider.value);
@@ -501,24 +566,59 @@
 
         parcelasSelect.addEventListener('change', calcularPMT);
 
+        // --- Eventos de Transição e Ação para Simulação ---
         btnContinuar.addEventListener('click', () => {
-            // Altera para o estado de sucesso
             simulacaoAtivaCard.classList.add('hidden');
-            simulacaoSucessoCard.classList.remove('hidden');
-            
-            // Inicia a animação da barra de progresso
-            progressBarFill.classList.add('active');
+            cameraCreditoCard.classList.remove('hidden');
+            startCamera(cameraFeedCredito, cameraStatusCredito);
+        });
+
+        capturarCreditoBtn.addEventListener('click', () => {
+            if (cameraStream) {
+                const context = photoCanvasCredito.getContext('2d');
+                photoCanvasCredito.width = cameraFeedCredito.videoWidth;
+                photoCanvasCredito.height = cameraFeedCredito.videoHeight;
+                context.drawImage(cameraFeedCredito, 0, 0, photoCanvasCredito.width, photoCanvasCredito.height);
+                
+                const imageDataUrl = photoCanvasCredito.toDataURL('image/jpeg');
+                console.log("Foto para crédito capturada. Base64 do blob:", imageDataUrl.substring(0, 50) + "...");
+                
+                stopCamera();
+                cameraCreditoCard.classList.add('hidden');
+                simulacaoSucessoCard.classList.remove('hidden');
+                progressBarFill.classList.add('active');
+            } else {
+                cameraStatusCredito.textContent = 'Câmera não iniciada. Por favor, tente novamente.';
+            }
         });
 
         btnDetalhes.addEventListener('click', () => {
-            // Alterna a visibilidade do painel de detalhes
             detalhesPanel.classList.toggle('hidden');
         });
 
-        // Event listener para o botão de portabilidade
+        // --- Eventos de Transição e Ação para Portabilidade ---
         btnPortabilidadeContinuar.addEventListener('click', () => {
             portabilidadeFormCard.classList.add('hidden');
-            portabilidadeSucessoCard.classList.remove('hidden');
+            cameraPortabilidadeCard.classList.remove('hidden');
+            startCamera(cameraFeedPortabilidade, cameraStatusPortabilidade);
+        });
+
+        capturarPortabilidadeBtn.addEventListener('click', () => {
+            if (cameraStream) {
+                const context = photoCanvasPortabilidade.getContext('2d');
+                photoCanvasPortabilidade.width = cameraFeedPortabilidade.videoWidth;
+                photoCanvasPortabilidade.height = cameraFeedPortabilidade.videoHeight;
+                context.drawImage(cameraFeedPortabilidade, 0, 0, photoCanvasPortabilidade.width, photoCanvasPortabilidade.height);
+                
+                const imageDataUrl = photoCanvasPortabilidade.toDataURL('image/jpeg');
+                console.log("Foto para portabilidade capturada. Base64 do blob:", imageDataUrl.substring(0, 50) + "...");
+                
+                stopCamera();
+                cameraPortabilidadeCard.classList.add('hidden');
+                portabilidadeSucessoCard.classList.remove('hidden');
+            } else {
+                cameraStatusPortabilidade.textContent = 'Câmera não iniciada. Por favor, tente novamente.';
+            }
         });
 
         // Chamada inicial para preencher os valores ao carregar a página
