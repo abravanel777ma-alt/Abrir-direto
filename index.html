@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MALDA - Banco Digital | Simulação</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Cores personalizadas para o Tailwind */
+        :root {
+            --color-primary: #0D47A1;
+            --color-secondary: #6B4F36;
+            --color-medium-blue: #1E3A8A;
+            --color-white: #FFFFFF;
+            --color-gray: #6B7280;
+        }
+
+        /* Configuração de classes personalizadas do Tailwind */
+        .glass-card {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.75);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Estilo do Slider */
+        .slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background-color: var(--color-secondary);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid var(--color-white);
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .slider-thumb:hover {
+            background-color: #553e2a;
+            transform: scale(1.1);
+        }
+        .slider-track {
+            height: 8px;
+            background: linear-gradient(to right, #6B4F36 0%, #0D47A1 100%);
+            border-radius: 9999px;
+        }
+        
+        /* Estilos do background da seção Hero */
+        .hero-bg {
+            background-image: linear-gradient(rgba(13, 71, 161, 0.7), rgba(13, 71, 161, 0.7)), url('https://placehold.co/1920x1080/0D47A1/ffffff?text=');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Animação da barra de progresso */
+        .progress-bar {
+            background-color: #d1d5db;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            background-color: var(--color-primary);
+            transition: width 2s ease-in-out;
+        }
+        .progress-fill.active {
+            width: 100%;
+        }
+
+        /* SVG de checkmark */
+        .checkmark-svg {
+            transition: all 0.5s ease-in-out;
+            transform: scale(0);
+        }
+        .checkmark-svg.active {
+            transform: scale(1);
+        }
+
+        @keyframes checkmark-draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+    </style>
+</head>
+
+<body class="font-sans text-gray-800 bg-white">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-[#0D47A1] to-[#1E3A8A] text-white py-4 px-6 md:px-12 fixed w-full top-0 z-50">
+        <div class="flex items-center justify-between max-w-7xl mx-auto">
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Portabilidade <span class="text-xs md:text-sm font-normal block md:inline md:ml-1 text-gray-300">INSS</span></h1>
+            <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm md:text-base">
+                <a href="#simulacao" class="hover:text-amber-300 transition-colors">Início</a>
+                <a href="#simulacao" class="hover:text-amber-300 transition-colors">Simulação</a>
+                <a href="#seguranca" class="hover:text-amber-300 transition-colors">Segurança</a>
+                <a href="#faq" class="hover:text-amber-300 transition-colors">Contato</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <!-- Hero Section com Card Central -->
+        <section class="hero-bg flex items-center justify-center min-h-screen px-4 py-8 md:py-16">
+            <div class="max-w-4xl w-full">
+                <!-- Card Principal - Container de Simulação e Sucesso -->
+                <div id="simulacao-container" class="glass-card p-6 md:p-10 rounded-3xl shadow-lg border border-gray-100/50 relative overflow-hidden transition-all duration-500 ease-in-out">
+                    
+                    <!-- Estado 1: Simulação Ativa -->
+                    <div id="simulacao-ativa-card" class="">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl md:text-4xl font-extrabold text-[#0D47A1] leading-tight">Crédito aprovado para portabilidade</h2>
+                            <p class="mt-2 text-gray-600 text-lg md:text-xl font-medium">Simule o valor e as parcelas agora mesmo. Sem taxas antecipadas.</p>
+                        </div>
+                        
+                        <!-- Selos de Confiança -->
+                        <div class="flex flex-wrap justify-center gap-4 mb-8 text-center text-sm md:text-base">
+                            <span class="bg-emerald-600 text-white px-3 py-1.5 rounded-full font-semibold">Aprovação confirmada</span>
+                            <span class="bg-[#6B4F36] text-white px-3 py-1.5 rounded-full font-semibold">Atendimento humano</span>
+                            <span class="bg-[#6B4F36] text-white px-3 py-1.5 rounded-full font-semibold">Sem antecipação</span>
+                        </div>
+
+                        <!-- Formulário de Simulação -->
+                        <div class="space-y-6">
+                            <!-- Seletor de Valor -->
+                            <div>
+                                <label for="valor-input" class="block text-sm font-medium text-gray-700 mb-2">Valor do crédito Aprovado (R$ 1.500 a R$ 7.500)</label>
+                                <div class="relative">
+                                    <input type="range" id="valor-slider" min="1500" max="7500" step="100" value="1500"
+                                        class="w-full h-8 bg-transparent cursor-pointer appearance-none [&::-webkit-slider-thumb]:slider-thumb [&::-moz-range-thumb]:slider-thumb [&::-webkit-slider-runnable-track]:slider-track [&::-moz-range-track]:slider-track">
+                                    <input type="text" id="valor-input" value="R$ 1.500,00"
+                                        class="mt-2 w-full p-3 border border-gray-300 rounded-lg text-lg text-center font-bold bg-white"
+                                        aria-label="Valor do crédito">
+                                </div>
+                            </div>
+        
+                            <!-- Seletor de Parcelas -->
+                            <div>
+                                <label for="parcelas" class="block text-sm font-medium text-gray-700 mb-2">Quantidade de parcelas (2 a 50)</label>
+                                <select id="parcelas" class="w-full p-3 border border-gray-300 rounded-lg text-lg bg-white" aria-label="Quantidade de parcelas">
+                                    <script>
+                                        for(let i = 2; i <= 50; i++) {
+                                            document.write(`<option value="${i}">${i} parcelas</option>`);
+                                        }
+                                    </script>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Resultados da Simulação -->
+                        <div class="mt-8 text-center bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                            <div class="flex items-center justify-center text-lg md:text-xl font-semibold mb-2 text-[#0D47A1]">
+                                <span class="mr-2">Taxa aplicada:</span>
+                                <span id="taxa-aplicada" class="text-[#6B4F36]">5% a.m.</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                                <div>
+                                    <div class="text-sm text-gray-500 font-medium">Parcela estimada</div>
+                                    <div id="parcela-estimada" class="text-2xl md:text-3xl font-bold text-[#0D47A1]">R$ 0,00</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500 font-medium">Total a pagar</div>
+                                    <div id="total-a-pagar" class="text-2xl md:text-3xl font-bold text-[#0D47A1]">R$ 0,00</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="mt-8 flex flex-col md:flex-row gap-4">
+                            <button id="btn-continuar" class="w-full py-4 bg-[#0D47A1] text-white font-bold rounded-xl text-lg hover:bg-[#1E3A8A] transition-colors focus:outline-none focus:ring-4 focus:ring-[#0D47A1]/50">Continuar</button>
+                            <button id="btn-detalhes" class="w-full py-4 text-[#0D47A1] font-bold rounded-xl text-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-4 focus:ring-gray-300">Ver cálculo detalhado</button>
+                        </div>
+
+                        <!-- Painel de Detalhes (oculto por padrão) -->
+                        <div id="detalhes-panel" class="hidden mt-6 bg-gray-50 p-4 rounded-xl text-sm transition-all duration-300 ease-in-out">
+                            <h3 class="font-bold text-base text-[#0D47A1] mb-2">Cálculo detalhado</h3>
+                            <p class="text-gray-700">Fórmula de Juros Compostos (PMT):</p>
+                            <p class="font-mono text-xs text-gray-600 my-2">parcela = P * i * (1+i)^n / ((1+i)^n - 1)</p>
+                            <p class="text-sm font-medium">Onde:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2 text-gray-600">
+                                <li><span class="font-bold">P</span> = Valor do crédito: <span id="detalhe-p"></span></li>
+                                <li><span class="font-bold">i</span> = Taxa mensal: <span id="detalhe-i"></span></li>
+                                <li><span class="font-bold">n</span> = Número de parcelas: <span id="detalhe-n"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+        
+                    <!-- Estado 2: Sucesso (oculto por padrão) -->
+                    <div id="simulacao-sucesso-card" class="hidden text-center transition-opacity duration-500 ease-in-out">
+                        <div class="flex justify-center mb-6">
+                            <svg class="w-20 h-20 text-[#0D47A1]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-[#0D47A1] mb-4">Dados enviados com sucesso!</h2>
+                        <p class="text-lg text-gray-600 mb-8">Sua solicitação foi registrada. O valor está a caminho. Prazo de até 4 horas (geralmente cai antes, até imediatamente). Em caso de dúvidas, entre em contato.</p>
+        
+                        <!-- Barra de Progresso Simulado -->
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-1">
+                                <div class="progress-bar w-full h-2 rounded-full overflow-hidden">
+                                    <div id="progress-fill" class="progress-fill"></div>
+                                </div>
+                                <div class="flex justify-between text-xs mt-2 text-gray-500">
+                                    <span>Análise final</span>
+                                    <span>Liberação</span>
+                                    <span>Notificação</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Portabilidade -->
+        <section id="portabilidade-section" class="flex items-center justify-center min-h-screen px-4 py-8 md:py-16">
+            <div class="max-w-4xl w-full">
+                <div id="portabilidade-container" class="glass-card p-6 md:p-10 rounded-3xl shadow-lg border border-gray-100/50 relative overflow-hidden">
+                    
+                    <!-- Conteúdo da simulação de portabilidade, inicialmente visível -->
+                    <div id="portabilidade-form-card" class="">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl md:text-4xl font-extrabold text-[#0D47A1] leading-tight">Portabilidade</h2>
+                            <p class="mt-2 text-gray-600 text-lg md:text-xl font-medium">Troque seu banco para ter melhores condições. É fácil, rápido e seguro.</p>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div>
+                                <label for="banco-atual" class="block text-sm font-medium text-gray-700 mb-2">Banco Atual</label>
+                                <select id="banco-atual" class="w-full p-3 border border-gray-300 rounded-lg text-lg bg-white" aria-label="Banco atual">
+                                    <option value="" disabled selected>Selecione seu banco atual</option>
+                                    <option value="agibank">Agibank</option>
+                                    <option value="bb">Banco do Brasil</option>
+                                    <option value="bmg">BMG</option>
+                                    <option value="bradesco">Bradesco</option>
+                                    <option value="c6">C6 Bank</option>
+                                    <option value="caixa">Caixa Econômica Federal</option>
+                                    <option value="daycoval">Daycoval</option>
+                                    <option value="inter">Inter</option>
+                                    <option value="itau">Itaú Unibanco</option>
+                                    <option value="mercantil">Mercantil do Brasil</option>
+                                    <option value="mercadopago">Mercado Pago</option>
+                                    <option value="original">Original</option>
+                                    <option value="pagbank">PagBank</option>
+                                    <option value="picpay">PicPay</option>
+                                    <option value="santander">Santander</option>
+                                    <option value="sicoob">Sicoob</option>
+                                    <option value="sicredi">Sicredi</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="banco-portabilidade" class="block text-sm font-medium text-gray-700 mb-2">Portabilidade para</label>
+                                <select id="banco-portabilidade" class="w-full p-3 border border-gray-300 rounded-lg text-lg bg-white" aria-label="Banco para portabilidade">
+                                    <option value="" disabled selected>Selecione o banco de destino</option>
+                                    <option value="agibank">Agibank</option>
+                                    <option value="bb">Banco do Brasil</option>
+                                    <option value="bmg">BMG</option>
+                                    <option value="bradesco">Bradesco</option>
+                                    <option value="c6">C6 Bank</option>
+                                    <option value="caixa">Caixa Econômica Federal</option>
+                                    <option value="daycoval">Daycoval</option>
+                                    <option value="inter">Inter</option>
+                                    <option value="itau">Itaú Unibanco</option>
+                                    <option value="mercantil">Mercantil do Brasil</option>
+                                    <option value="mercadopago">Mercado Pago</option>
+                                    <option value="original">Original</option>
+                                    <option value="pagbank">PagBank</option>
+                                    <option value="picpay">PicPay</option>
+                                    <option value="santander">Santander</option>
+                                    <option value="sicoob">Sicoob</option>
+                                    <option value="sicredi">Sicredi</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <button id="btn-portabilidade-continuar" class="w-full py-4 bg-[#0D47A1] text-white font-bold rounded-xl text-lg hover:bg-[#1E3A8A] transition-colors focus:outline-none focus:ring-4 focus:ring-[#0D47A1]/50">Continuar</button>
+                        </div>
+                    </div>
+
+                    <!-- Estado de Sucesso da Portabilidade (oculto por padrão) -->
+                    <div id="portabilidade-sucesso-card" class="hidden text-center transition-opacity duration-500 ease-in-out">
+                        <div class="flex justify-center mb-6">
+                            <svg class="w-20 h-20 text-[#0D47A1]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-[#0D47A1] mb-4">Dados de portabilidade enviados com sucesso!</h2>
+                        <p class="text-lg text-gray-600 mb-8">Sua solicitação foi registrada. Sua portabilidade está a caminho. Prazo de até 4 horas (geralmente ativa antes, até imediatamente). Em caso de dúvidas, entre em contato.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Segurança & Transparência -->
+        <section id="seguranca" class="bg-white py-12 md:py-20 px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-center text-[#0D47A1] mb-12">Segurança e Transparência</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center md:text-left">
+                    <div class="flex flex-col items-center md:items-start p-6 bg-gray-50 rounded-2xl shadow-sm">
+                        <!-- SVG Genérico de Dinheiro -->
+                        <svg class="w-12 h-12 text-[#6B4F36] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v2m0 4v2m-3 0h6a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                        </svg>
+                        <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Não pedimos dinheiro antecipado.</h3>
+                        <p class="text-gray-600">Sua aprovação é gratuita. Nenhuma taxa ou depósito prévio é solicitado para a liberação do crédito.</p>
+                    </div>
+                    <div class="flex flex-col items-center md:items-start p-6 bg-gray-50 rounded-2xl shadow-sm">
+                        <!-- SVG Genérico de Círculo -->
+                        <svg class="w-12 h-12 text-[#6B4F36] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Sem taxas ocultas.</h3>
+                        <p class="text-gray-600">O valor da parcela e o total a pagar são claros desde a simulação. Transparência total antes de você prosseguir.</p>
+                    </div>
+                    <div class="flex flex-col items-center md:items-start p-6 bg-gray-50 rounded-2xl shadow-sm">
+                        <!-- SVG Genérico de Documento -->
+                        <svg class="w-12 h-12 text-[#6B4F36] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M17 12h.01" />
+                        </svg>
+                        <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Processo transparente e notificação ao banco.</h3>
+                        <p class="text-gray-600">Quando aplicável, informamos o banco sobre a portabilidade para garantir que todo o processo seja claro e seguro para você.</p>
+                    </div>
+                    <div class="flex flex-col items-center md:items-start p-6 bg-gray-50 rounded-2xl shadow-sm">
+                        <!-- SVG Genérico de Relógio -->
+                        <svg class="w-12 h-12 text-[#6B4F36] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Desconto em folha ou manual.</h3>
+                        <p class="text-gray-600">A forma de pagamento se adapta à sua modalidade. Desconto em folha quando aplicável ou pagamento manual após o recebimento do valor.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção FAQ -->
+        <section id="faq" class="bg-gray-100 py-12 md:py-20 px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-center text-[#0D47A1] mb-12">Perguntas Frequentes</h2>
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                        <h3 class="text-xl font-semibold text-[#1E3A8A] mb-2">Preciso pagar algo antes?</h3>
+                        <p class="text-gray-600">Não. Não solicitamos valores antecipados para a aprovação ou liberação do seu crédito.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                        <h3 class="text-xl font-semibold text-[#1E3A8A] mb-2">Em quanto tempo o dinheiro cai na conta?</h3>
+                        <p class="text-gray-600">O prazo é de até 4 horas, mas na maioria dos casos o valor é creditado imediatamente ou em um tempo muito menor.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                        <h3 class="text-xl font-semibold text-[#1E3A8A] mb-2">Posso alterar o número de parcelas?</h3>
+                        <p class="text-gray-600">Sim, você pode refazer a simulação a qualquer momento para encontrar a melhor opção de parcelamento para você.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                        <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Como funciona a portabilidade?</h3>
+                        <p class="text-gray-600">Analisamos sua situação para transferir sua dívida ou benefício para condições de pagamento mais vantajosas. Tudo de forma simples e rápida.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#1E3A8A] text-white py-12 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-lg mb-4">
+                <p>Contato: (99) 99999-9999</p>
+                <p>E-mail: contato@maldabancodigital.com</p>
+            </div>
+            <p class="text-sm text-gray-400">&copy; 2025 MALDA - Banco Digital. Todos os direitos reservados.</p>
+            <p class="text-xs text-gray-500 mt-2">A simulação é meramente informativa. Valores, taxas e CET podem variar conforme análise de crédito e modalidade de produto.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Configuração personalizada do Tailwind
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#0D47A1',
+                        'medium-blue': '#1E3A8A',
+                        'secondary-brown': '#6B4F36',
+                        'light-gray': '#6B7280',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+
+        // Referências aos elementos do DOM da Simulação
+        const valorSlider = document.getElementById('valor-slider');
+        const valorInput = document.getElementById('valor-input');
+        const parcelasSelect = document.getElementById('parcelas');
+        const taxaAplicadaSpan = document.getElementById('taxa-aplicada');
+        const parcelaEstimadaDiv = document.getElementById('parcela-estimada');
+        const totalAPagarDiv = document.getElementById('total-a-pagar');
+        const btnContinuar = document.getElementById('btn-continuar');
+        const simulacaoAtivaCard = document.getElementById('simulacao-ativa-card');
+        const simulacaoSucessoCard = document.getElementById('simulacao-sucesso-card');
+        const btnDetalhes = document.getElementById('btn-detalhes');
+        const detalhesPanel = document.getElementById('detalhes-panel');
+        const detalheP = document.getElementById('detalhe-p');
+        const detalheI = document.getElementById('detalhe-i');
+        const detalheN = document.getElementById('detalhe-n');
+        const progressBarFill = document.getElementById('progress-fill');
+
+        // Referências aos novos elementos do DOM da Portabilidade
+        const btnPortabilidadeContinuar = document.getElementById('btn-portabilidade-continuar');
+        const portabilidadeFormCard = document.getElementById('portabilidade-form-card');
+        const portabilidadeSucessoCard = document.getElementById('portabilidade-sucesso-card');
+
+
+        // Formato para moeda brasileira
+        const formatter = new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        });
+
+        // Função principal de cálculo da parcela
+        function calcularPMT() {
+            let P = parseFloat(valorSlider.value);
+            let n = parseInt(parcelasSelect.value);
+            let i;
+            let taxaPercentual;
+
+            // Define a taxa de juros com base no número de parcelas
+            if (n <= 20) {
+                i = 0.05; // 5% a.m.
+                taxaPercentual = "5% a.m.";
+            } else {
+                i = 0.06; // 6% a.m.
+                taxaPercentual = "6% a.m.";
+            }
+
+            // Garante que 'P' seja um valor positivo para evitar erros
+            if (P <= 0) {
+                parcelaEstimadaDiv.textContent = formatter.format(0);
+                totalAPagarDiv.textContent = formatter.format(0);
+                taxaAplicadaSpan.textContent = taxaPercentual;
+                return;
+            }
+
+            // Aplica a fórmula de PMT (Payment per period)
+            const parcela = P * i * Math.pow((1 + i), n) / (Math.pow((1 + i), n) - 1);
+            const totalAPagar = parcela * n;
+
+            // Atualiza os elementos na tela com os valores formatados
+            parcelaEstimadaDiv.textContent = formatter.format(parcela);
+            totalAPagarDiv.textContent = formatter.format(totalAPagar);
+            taxaAplicadaSpan.textContent = taxaPercentual;
+
+            // Atualiza o painel de detalhes do cálculo
+            detalheP.textContent = formatter.format(P);
+            detalheI.textContent = taxaPercentual;
+            detalheN.textContent = n;
+        }
+
+        // Sincroniza o input de texto com o slider
+        function sincronizarValores() {
+            const valor = parseFloat(valorInput.value.replace(/[^0-9,]/g, '').replace(',', '.'));
+            
+            // Valida e corrige o valor se estiver fora do range
+            if (valor < 1500) {
+                valorSlider.value = 1500;
+                valorInput.value = formatter.format(1500);
+            } else if (valor > 7500) {
+                valorSlider.value = 7500;
+                valorInput.value = formatter.format(7500);
+            } else {
+                valorSlider.value = valor;
+                valorInput.value = formatter.format(valor);
+            }
+            calcularPMT();
+        }
+
+        // Event Listeners
+        valorSlider.addEventListener('input', () => {
+            valorInput.value = formatter.format(valorSlider.value);
+            calcularPMT();
+        });
+
+        valorInput.addEventListener('change', sincronizarValores);
+        
+        valorInput.addEventListener('focus', () => {
+            // Remove a formatação ao focar para facilitar a edição
+            valorInput.value = valorSlider.value;
+        });
+
+        valorInput.addEventListener('blur', () => {
+            // Formata o valor ao perder o foco
+            sincronizarValores();
+        });
+
+        parcelasSelect.addEventListener('change', calcularPMT);
+
+        btnContinuar.addEventListener('click', () => {
+            // Altera para o estado de sucesso
+            simulacaoAtivaCard.classList.add('hidden');
+            simulacaoSucessoCard.classList.remove('hidden');
+            
+            // Inicia a animação da barra de progresso
+            progressBarFill.classList.add('active');
+        });
+
+        btnDetalhes.addEventListener('click', () => {
+            // Alterna a visibilidade do painel de detalhes
+            detalhesPanel.classList.toggle('hidden');
+        });
+
+        // Event listener para o botão de portabilidade
+        btnPortabilidadeContinuar.addEventListener('click', () => {
+            portabilidadeFormCard.classList.add('hidden');
+            portabilidadeSucessoCard.classList.remove('hidden');
+        });
+
+        // Chamada inicial para preencher os valores ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            calcularPMT();
+        });
+
+    </script>
+
+</body>
+</html>
